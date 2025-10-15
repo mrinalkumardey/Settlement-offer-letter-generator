@@ -62,11 +62,9 @@
             cursor: not-allowed;
         }
         #resetBtn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
             width: 120px;
             background-color: #f44336;
+            margin-top: 10px;
         }
         #resetBtn:hover:not(:disabled) {
             background-color: #da190b;
@@ -106,7 +104,6 @@
     </style>
 </head>
 <body>
-    <button type="button" id="resetBtn" onclick="resetForm()">Reset Form</button>
     <h2>Settlement Offer Letter Generator</h2>
     <form id="letterForm">
         <label>Ref No:</label>
@@ -116,7 +113,7 @@
         <input type="date" id="offerDate" value="2025-10-15">
 
         <label>Branch:</label>
-        <input type="text" id="branch" placeholder="Enter branch (e.g., Bandhan BU)">
+        <input type="text" id="branch" placeholder="Enter branch">
 
         <label>Loan A/C No:</label>
         <input type="text" id="loanAcNo" placeholder="Enter loan A/C no">
@@ -190,6 +187,7 @@
             <button type="button" id="generateBtn" onclick="generatePDF()">Generate PDF</button>
             <button type="button" id="printBtn" onclick="printPDF()">Print PDF</button>
         </div>
+        <button type="button" id="resetBtn" onclick="resetForm()">Reset Form</button>
     </form>
     <div id="loading">Generating PDF...</div>
     <div class="developer-info">
@@ -244,14 +242,14 @@
         }
 
         function updateWords() {
-            const loanAmount = document.getElementById('loanAmount').value || '00000';
-            document.getElementById('loanWords').value = numberToWords(loanAmount) + ' Rupees Only';
+            const loanAmount = document.getElementById('loanAmount').value || '';
+            document.getElementById('loanWords').value = loanAmount ? numberToWords(loanAmount) + ' Rupees Only' : '';
 
-            const outstandingAmount = document.getElementById('outstandingAmount').value || '00000';
-            document.getElementById('outstandingWords').value = numberToWords(outstandingAmount) + ' Only';
+            const outstandingAmount = document.getElementById('outstandingAmount').value || '';
+            document.getElementById('outstandingWords').value = outstandingAmount ? numberToWords(outstandingAmount) + ' Only' : '';
 
-            const settlementAmount = document.getElementById('settlementAmount').value || '00000';
-            document.getElementById('settlementWords').value = numberToWords(settlementAmount) + ' Only';
+            const settlementAmount = document.getElementById('settlementAmount').value || '';
+            document.getElementById('settlementWords').value = settlementAmount ? numberToWords(settlementAmount) + ' Only' : '';
         }
 
         function showLoading(show) {
@@ -326,7 +324,7 @@
                 const titleWidth = boldFont.widthOfTextAtSize('SETTLEMENT OFFER', fontSize + 2);
                 page1.drawText('SETTLEMENT OFFER', { x: (595 - titleWidth) / 2, y: currentY, size: fontSize + 2, font: boldFont });
                 page1.drawLine({ start: { x: (595 - titleWidth) / 2, y: currentY - 3 }, end: { x: (595 + titleWidth) / 2, y: currentY - 3 }, thickness: 1, color: rgb(0, 0, 0) });
-                currentY -= lineHeight * 2;
+                currentY -= lineHeight * 6; // Increased space by 4 additional line heights
 
                 page1.drawText(`Ref. No: ${data.refNo}`, { x: leftMargin, y: currentY, size: fontSize, font });
                 currentY -= lineHeight;
@@ -498,10 +496,9 @@
             document.getElementById('offerDate').value = today;
             document.getElementById('outstandingAsOn').value = today;
             document.getElementById('validTill').value = today;
-            document.getElementById('branch').value = 'Bandhan BU';
-            document.getElementById('loanAmount').value = '00000';
-            document.getElementById('outstandingAmount').value = '00000';
-            document.getElementById('settlementAmount').value = '00000';
+            document.getElementById('loanAmount').value = '';
+            document.getElementById('outstandingAmount').value = '';
+            document.getElementById('settlementAmount').value = '';
             updateWords();
         }
 
